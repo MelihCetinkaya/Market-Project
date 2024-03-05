@@ -1,4 +1,4 @@
 package MarketProject.backend.repository;
 
-public class UserRepository {
+public interface UserRepository {
 }
