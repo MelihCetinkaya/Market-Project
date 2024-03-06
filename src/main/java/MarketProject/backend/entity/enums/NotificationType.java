@@ -1,4 +1,4 @@
-package MarketProject.backend.entity;
+package MarketProject.backend.entity.enums;
 
 public enum NotificationType {
     warning,

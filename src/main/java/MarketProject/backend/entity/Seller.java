@@ -1,14 +1,10 @@
 package MarketProject.backend.entity;
 
-import jakarta.persistence.Column;
+import jakarta.persistence.*;
 import lombok.*;
-
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
+import MarketProject.backend.entity.Market;
 import java.util.Date;
+import java.util.List;
 
 @Entity
 @Getter
@@ -27,7 +23,11 @@ public class Seller {
     private String surname;
     @Column(name = "Age")
     private int age;
+
     private String marketName;
+
+    @OneToOne
+    private Market market;
 
     private Date created_at;
 

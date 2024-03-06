@@ -19,11 +19,17 @@ public class Product {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
     private Long productId;
+
     private String productName;
+
     private int stock_amount;
+
     private Boolean stock_status;
+
     @OneToMany
     private List<Comment> comments;
+
     private Date added_at;
+
     private Date supplyDate;
 }

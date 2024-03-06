@@ -1,5 +1,6 @@
 package MarketProject.backend.service;
 
+import MarketProject.backend.dto.CommentDto;
 import MarketProject.backend.dto.CustomerDto;
 import MarketProject.backend.dto.SellerDto;
 import MarketProject.backend.entity.Comment;
@@ -10,17 +11,20 @@ import java.util.List;
 
 public interface CustomerService {
 
-    void saveCustomer(Customer customer);
+    Customer saveCustomer(CustomerDto customerDto);
 
     String updateCustomer(CustomerDto customerDto);  // !!!can specify
 
-    void makeComment();
+    Long chooseProduct();
 
-    List<Comment> getComments(int customer_id);
+    Comment makeComment(String expression);
 
-    String getNotification(int product_id); //can be list
+    List<CommentDto> getComments(Long customer_id);
+
+    String getNotification(Long product_id); //can be list
 
     void makeFeedback();
+
 
 
 

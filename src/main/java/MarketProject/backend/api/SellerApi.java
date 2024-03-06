@@ -1,7 +1,9 @@
 package MarketProject.backend.api;
 
 import MarketProject.backend.dto.ProductDto;
+import MarketProject.backend.dto.SellerDto;
 import MarketProject.backend.entity.Product;
+import MarketProject.backend.entity.Seller;
 import MarketProject.backend.service.SellerService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -19,9 +21,10 @@ public class SellerApi {
 
 
     @GetMapping
-    public List<Product>getProducts(){
+    public ResponseEntity<List<ProductDto>>getProducts(){
 
-    return null;
+
+    return ResponseEntity.ok(sellerService.getProducts());
 
     }
 
@@ -30,5 +33,11 @@ public class SellerApi {
 
         return ResponseEntity.ok(sellerService.addProduct(productDto));
 
+    }
+
+    @PostMapping("/addUser")
+    public ResponseEntity<Seller> saveSeller(SellerDto sellerDto){
+
+        return ResponseEntity.ok(sellerService.saveSeller(sellerDto));
     }
 }
