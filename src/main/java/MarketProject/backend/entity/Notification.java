@@ -1,10 +1,8 @@
 package MarketProject.backend.entity;
 
+import MarketProject.backend.entity.enums.NotificationRelation;
 import MarketProject.backend.entity.enums.NotificationType;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -27,6 +25,13 @@ public class Notification {
 
     private NotificationType notificationType;
 
+    private NotificationRelation notificationRelation;
+
+    @ManyToOne
+    private Product product;// could be change
+
     private Date notification_date;
+
+    private Date created_at;
 
 }

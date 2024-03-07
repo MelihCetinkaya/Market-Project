@@ -14,12 +14,10 @@ public interface CommentRepository extends JpaRepository<Comment,Long> {
     //@Query("SELECT c FROM Comment c WHERE c.commentType = 'market'")
    // List<Comment> findAllMarketComments();
 
-    @Query("SELECT c FROM Comment c WHERE c.commentType = 1 AND c.product.productId = :productId") //******
-    List<Comment> findProductCommentsByProductId(@Param("productId") Long productId);
+    @Query("SELECT c FROM Comment c WHERE c.commentType = :commentType AND c.product.productId = :productId") //******
+    List<Comment> findProductCommentsByProductId(@Param("productId") Long productId,
+                                                 @Param("commentType") CommentType commentType);
 
-
-
-    List<Comment> findAllByCommentType(CommentType commentType);
 
     @Query("SELECT c FROM Comment c WHERE c.commentType = :commentType")  // not used
     List<Comment> findByCommentType(@Param("commentType") CommentType commentType);

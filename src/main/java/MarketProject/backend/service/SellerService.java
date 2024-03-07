@@ -20,9 +20,9 @@ public interface SellerService {
 
  String updateSeller(SellerDto sellerDto);  // !!!can specify
 
- List<ProductDto> getProducts();
+ List<ProductDto> getProducts();//share with customer
 
- Optional<Product> getProduct(Long productId);
+ Product getProduct(Long productId);//share with customer
 
  List<CommentDto> getMarketComments();
 

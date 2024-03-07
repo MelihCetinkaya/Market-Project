@@ -99,10 +99,8 @@ public class SellerServiceImpl implements SellerService {
     }
 
     @Override
-    public Optional<Product> getProduct(Long productId) {
-
-       Optional<Product> product= productRepository.findById(productId);
-        return product;
+    public Product getProduct(Long productId) {  // could be productDto
+        return productRepository.findById(productId).orElse(null);
     }
 
     @Override
@@ -146,7 +144,9 @@ public class SellerServiceImpl implements SellerService {
             notificationDto.setNotification_id(notification.getNotification_id());
             notificationDto.setNotification_date(notification.getNotification_date());
             notificationDto.setNotificationType(notification.getNotificationType());
-
+            notificationDto.setNotificationRelation(notification.getNotificationRelation());//*****
+            notificationDto.setProduct(null);
+            notificationDto.setCreated_at(new Date());
             notificationDtos.add(notificationDto);
 
 

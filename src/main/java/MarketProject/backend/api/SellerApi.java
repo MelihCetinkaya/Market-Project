@@ -1,7 +1,10 @@
 package MarketProject.backend.api;
 
+import MarketProject.backend.dto.CommentDto;
+import MarketProject.backend.dto.NotificationDto;
 import MarketProject.backend.dto.ProductDto;
 import MarketProject.backend.dto.SellerDto;
+import MarketProject.backend.entity.Comment;
 import MarketProject.backend.entity.Product;
 import MarketProject.backend.entity.Seller;
 import MarketProject.backend.service.SellerService;
@@ -17,7 +20,6 @@ import java.util.List;
 public class SellerApi {
 
     private final SellerService sellerService;
-
 
 
     @GetMapping
@@ -39,5 +41,19 @@ public class SellerApi {
     public ResponseEntity<Seller> saveSeller(SellerDto sellerDto){
 
         return ResponseEntity.ok(sellerService.saveSeller(sellerDto));
+    }
+
+    @GetMapping("/product/{product_id}")
+    public ResponseEntity<Product>getProduct(Long product_id){
+        return ResponseEntity.ok(sellerService.getProduct(product_id));
+    }
+
+    public ResponseEntity<List<CommentDto>> getMarketComments(){
+
+        return ResponseEntity.ok(sellerService.getMarketComments());
+    }
+
+    public ResponseEntity<List<NotificationDto>> getMarketNotifications(){
+        return ResponseEntity.ok(sellerService.getMarketNotifications());
     }
 }

@@ -5,8 +5,10 @@ import MarketProject.backend.dto.CustomerDto;
 import MarketProject.backend.dto.SellerDto;
 import MarketProject.backend.entity.Comment;
 import MarketProject.backend.entity.Customer;
+import MarketProject.backend.entity.Notification;
 import MarketProject.backend.entity.Seller;
 
+import java.util.Date;
 import java.util.List;
 
 public interface CustomerService {
@@ -21,9 +23,9 @@ public interface CustomerService {
 
     List<CommentDto> getComments(Long customer_id);
 
-    String getNotification(Long product_id); //can be list
+    Notification createNotification(Long product_id, Date date); //can be list
 
-    void makeFeedback();
+    void makeFeedback(String expression);
 
 
 

@@ -20,7 +20,7 @@ public class Comment {
     @ManyToOne
     private Product product;
 
-   private CommentType commentType;
+    private CommentType commentType;
 
     private Date added_at;
 

@@ -4,10 +4,14 @@ import MarketProject.backend.dto.CommentDto;
 import MarketProject.backend.dto.CustomerDto;
 import MarketProject.backend.entity.Comment;
 import MarketProject.backend.entity.Customer;
+import MarketProject.backend.entity.Notification;
 import MarketProject.backend.entity.Product;
 import MarketProject.backend.entity.enums.CommentType;
+import MarketProject.backend.entity.enums.NotificationRelation;
+import MarketProject.backend.entity.enums.NotificationType;
 import MarketProject.backend.repository.CommentRepository;
 import MarketProject.backend.repository.CustomerRepository;
+import MarketProject.backend.repository.NotificationRepository;
 import MarketProject.backend.repository.ProductRepository;
 import MarketProject.backend.service.CustomerService;
 import lombok.RequiredArgsConstructor;
@@ -17,7 +21,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import java.util.Optional;
+
 
 @Service
 @RequiredArgsConstructor
@@ -26,6 +30,7 @@ public class CustomerServiceImpl implements CustomerService {
     private  final CustomerRepository customerRepository;
     private  final ProductRepository productRepository;
     private final CommentRepository commentRepository;
+    private final NotificationRepository notificationRepository;
     @Override
     @Transactional
     public Customer saveCustomer(CustomerDto customerDto) {
@@ -78,9 +83,9 @@ return comment;
     }
 
     @Override
-    public List<CommentDto> getComments(Long customer_id) {
+    public List<CommentDto> getComments(Long product_id) {
 
-        List<Comment>comments=commentRepository.findProductCommentsByProductId(customer_id);
+        List<Comment>comments=commentRepository.findProductCommentsByProductId(product_id,CommentType.product);
 
         List<CommentDto>commentDtos=new ArrayList<>();
 
@@ -104,12 +109,36 @@ return comment;
     }
 
     @Override
-    public String getNotification(Long product_id) {
-        return null;
+    @Transactional
+    public Notification createNotification(Long product_id,Date date) {
+
+        Notification notification=new Notification();
+
+        notification.setNotification_date(date);
+        notification.setNotificationType(NotificationType.timer);
+        notification.setNotificationRelation(NotificationRelation.product);
+        notification.setProduct(productRepository.findById(product_id).orElse(null));
+        notification.setNotification_message("Notification created for product number " + product_id);
+        notification.setCreated_at(new Date());
+
+        notificationRepository.save(notification);
+
+        return notification;
     }
 
     @Override
-    public void makeFeedback() {
+    public void makeFeedback(String expression) {
+
+        Notification notification=new Notification();
+        Comment comment=new Comment();
+
+        comment.setComment_expression(expression);
+        comment.setProduct(null);
+        comment.setCommentType(CommentType.market);
+        comment.setAdded_at(new Date());
+        comment.setUpdated_at(null);
+
+
 
     }
 }
