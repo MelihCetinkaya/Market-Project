@@ -17,18 +17,21 @@ import java.util.List;
 public class Market {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.AUTO)
     private Long marketId;
 
     private String marketName;
 
-    @OneToMany
+    @OneToMany(cascade = {CascadeType.REMOVE})
     private List<Notification>notification_bar;
-    @OneToMany
+
+    @OneToMany(cascade = {CascadeType.REMOVE})
+    //@JoinColumn(name = "addedProduct")
     private List<Product> products;
 
-    @OneToMany
-    private List<Comment> comments;
+
+    @OneToMany(cascade = {CascadeType.PERSIST, CascadeType.REMOVE})
+    private List<Comment> marketComments;
 
     private Date opening_time;
 

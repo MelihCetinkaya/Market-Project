@@ -2,6 +2,7 @@ package MarketProject.backend.service.impl;
 
 import MarketProject.backend.dto.CommentDto;
 import MarketProject.backend.dto.CustomerDto;
+import MarketProject.backend.dto.abstractClasses.PersonDto;
 import MarketProject.backend.entity.Comment;
 import MarketProject.backend.entity.Customer;
 import MarketProject.backend.entity.Notification;
@@ -36,14 +37,14 @@ public class CustomerServiceImpl implements CustomerService {
     public Customer saveCustomer(CustomerDto customerDto) {
 
         Customer customer =new Customer();
-        customer.setCustomer_name(customerDto.getCustomer_name());
-        customer.setCustomer_surname(customerDto.getCustomer_surname());
-        customer.setCustomer_age(customerDto.getCustomer_age());
-        customer.setComments(null);
+        customer.setName(customerDto.getName());
+        customer.setSurname(customerDto.getSurname());
+        customer.setAge(customerDto.getAge());
         customer.setJoined_at(new Date());
 
+
         customerRepository.save(customer);
-        System.out.println("Customer "+customerDto.getCustomer_name()+" added successfully");
+        System.out.println("Customer "+customerDto.getName()+" added successfully");
 
         return customer; //could change
     }

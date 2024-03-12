@@ -58,9 +58,7 @@ public class SellerServiceImpl implements SellerService {
         seller.setName(sellerDto.getName());
         seller.setSurname((sellerDto.getSurname()));
         seller.setAge(sellerDto.getAge());
-        seller.setMarketName(sellerDto.getMarketName());
-        seller.setMarket(sellerDto.getMarket());
-        seller.setCreated_at(new Date());
+        seller.setJoined_at(new Date());
 
         sellerRepository.save(seller);
         System.out.println("User "+sellerDto.getName()+" added successfully ");

@@ -1,23 +1,19 @@
 package MarketProject.backend.dto;
 
+import MarketProject.backend.dto.abstractClasses.PersonDto;
 import MarketProject.backend.entity.Comment;
-import jakarta.persistence.OneToMany;
-import lombok.Data;
 
-import java.util.Date;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+
+import java.util.ArrayList;
 import java.util.List;
 
+@EqualsAndHashCode(callSuper = true)//****
 @Data
-public class CustomerDto {
+public class CustomerDto extends PersonDto {
 
-    private Long customer_id;
-    private String customer_name;
-    private String customer_surname;
-
-    private int customer_age;
-
-    private List<Comment> comments;
-    private Date joined_at;
+    private List<Comment>comments = new ArrayList<>();
 
 
 }

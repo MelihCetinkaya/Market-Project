@@ -1,13 +1,13 @@
 package MarketProject.backend.entity;
 
-import jakarta.persistence.Id;
-import jakarta.persistence.Entity;
-import jakarta.persistence.OneToMany;
+import MarketProject.backend.entity.abstractClasses.Person;
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -17,16 +17,17 @@ import java.util.List;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class Customer {
+public class Customer extends Person {
 
-    @Id
-    private Long customer_id;
-    private String customer_name;
-    private String customer_surname;
 
-    private int customer_age;
-    @OneToMany
-    private List<Comment>comments;
-    private Date joined_at;
+    @OneToMany(cascade = {CascadeType.PERSIST, CascadeType.REMOVE})
+    @JoinTable(name="Customer_comment",joinColumns = @JoinColumn(name = "customer_id"),
+    inverseJoinColumns=@JoinColumn ( name = "commmentId") )
+
+    private List<Comment>comments = new ArrayList<>();
+
+
+
+
 
 }

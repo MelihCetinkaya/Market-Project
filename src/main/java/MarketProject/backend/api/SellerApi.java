@@ -22,7 +22,7 @@ public class SellerApi {
     private final SellerService sellerService;
 
 
-    @GetMapping
+    @GetMapping("/products")
     public ResponseEntity<List<ProductDto>>getProducts(){
 
 
@@ -38,7 +38,7 @@ public class SellerApi {
     }
 
     @PostMapping("/addUser")
-    public ResponseEntity<Seller> saveSeller(SellerDto sellerDto){
+    public ResponseEntity<Seller> saveSeller(@RequestBody SellerDto sellerDto){
 
         return ResponseEntity.ok(sellerService.saveSeller(sellerDto));
     }

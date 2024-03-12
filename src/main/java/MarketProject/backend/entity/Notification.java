@@ -1,5 +1,6 @@
 package MarketProject.backend.entity;
 
+import MarketProject.backend.entity.abstractClasses.Person;
 import MarketProject.backend.entity.enums.NotificationRelation;
 import MarketProject.backend.entity.enums.NotificationType;
 import jakarta.persistence.*;
@@ -18,7 +19,7 @@ import java.util.Date;
 public class Notification {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.AUTO)
     private Long notification_id;
 
     private String notification_message;
@@ -29,6 +30,12 @@ public class Notification {
 
     @ManyToOne
     private Product product;// could be change
+
+    @ManyToOne
+    private Person notified_by;
+
+    @ManyToOne
+    private Person notified_to;
 
     private Date notification_date;
 

@@ -1,8 +1,11 @@
 package MarketProject.backend.entity;
 
+import MarketProject.backend.entity.abstractClasses.Person;
 import jakarta.persistence.*;
 import lombok.*;
 import MarketProject.backend.entity.Market;
+
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -12,23 +15,14 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 
-public class Seller {
+public class Seller extends Person {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE)
-    private Long id;
-    @Column(length = 20, name = "Name")
-    private String name;
-    @Column(length = 20, name = "Surname")
-    private String surname;
-    @Column(name = "Age")
-    private int age;
 
-    private String marketName;
 
     @OneToOne
-    private Market market;
+    private Market market = null;
 
-    private Date created_at;
+    @OneToMany
+    private List <Comment> commented = new ArrayList<>();
 
 }

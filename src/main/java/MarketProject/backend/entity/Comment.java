@@ -14,16 +14,24 @@ import java.util.Date;
 public class Comment {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.AUTO)
     private Long commentId;
     private String comment_expression;
+
     @ManyToOne
+    @JoinColumn(name="productId")
     private Product product;
+
+    @ManyToOne
+    @JoinColumn(name="customer_id")
+    private Customer commented_by;
 
     private CommentType commentType;
 
+    @Temporal(TemporalType.DATE)
     private Date added_at;
 
+    @Temporal(TemporalType.DATE)
     private Date updated_at;
 
 
