@@ -1,5 +1,6 @@
 package MarketProject.backend.service;
 
+import MarketProject.backend.api.exceptionApi.exceptions.PersonNotFoundException;
 import MarketProject.backend.dto.CommentDto;
 import MarketProject.backend.dto.CustomerDto;
 import MarketProject.backend.dto.SellerDto;
@@ -12,6 +13,8 @@ import java.util.Date;
 import java.util.List;
 
 public interface CustomerService {
+
+    CustomerDto login(String username,String password) throws PersonNotFoundException;
 
     Customer saveCustomer(CustomerDto customerDto);
 

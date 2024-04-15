@@ -1,9 +1,6 @@
 package MarketProject.backend.api;
 
-import MarketProject.backend.dto.CommentDto;
-import MarketProject.backend.dto.NotificationDto;
-import MarketProject.backend.dto.ProductDto;
-import MarketProject.backend.dto.SellerDto;
+import MarketProject.backend.dto.*;
 import MarketProject.backend.entity.Comment;
 import MarketProject.backend.entity.Product;
 import MarketProject.backend.entity.Seller;
@@ -22,6 +19,11 @@ public class SellerApi {
     private final SellerService sellerService;
 
 
+    @GetMapping("/login")
+    public ResponseEntity<SellerDto> login(@RequestParam String username, @RequestParam String password){
+        return ResponseEntity.ok(sellerService.login(username, password)) ;
+    }
+
     @GetMapping("/products")
     public ResponseEntity<List<ProductDto>>getProducts(){
 
@@ -37,7 +39,7 @@ public class SellerApi {
 
     }
 
-    @PostMapping("/addUser")
+    @PostMapping("/save")
     public ResponseEntity<Seller> saveSeller(@RequestBody SellerDto sellerDto){
 
         return ResponseEntity.ok(sellerService.saveSeller(sellerDto));

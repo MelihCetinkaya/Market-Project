@@ -1,8 +1,8 @@
 package MarketProject.backend.dto.abstractClasses;
 
 import MarketProject.backend.entity.Comment;
-import MarketProject.backend.entity.Market;
 import MarketProject.backend.entity.Notification;
+
 
 import lombok.Data;
 
@@ -19,6 +19,10 @@ public abstract class PersonDto {
     private String name;
 
     private String surname;
+
+    private String username;
+
+    private String password;
 
     private int age;
 

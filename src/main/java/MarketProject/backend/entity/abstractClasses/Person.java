@@ -20,14 +20,24 @@ import java.util.List;
 @AllArgsConstructor
 public  abstract class  Person {
 
+    // username, password
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
+
     @Column(length = 20, name = "Name")
     private String name;
+
     @Column(length = 20, name = "Surname")
     private String surname;
+
+    @Column(length = 20, name = "Username")
+    private String username;
+
+    @Column(length = 20, name = "Password")
+    private String password;
+
     @Column(name = "Age")
     private int age;
 

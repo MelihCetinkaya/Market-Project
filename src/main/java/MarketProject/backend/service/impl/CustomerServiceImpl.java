@@ -1,5 +1,6 @@
 package MarketProject.backend.service.impl;
 
+import MarketProject.backend.api.exceptionApi.exceptions.PersonNotFoundException;
 import MarketProject.backend.dto.CommentDto;
 import MarketProject.backend.dto.CustomerDto;
 import MarketProject.backend.dto.abstractClasses.PersonDto;
@@ -32,6 +33,30 @@ public class CustomerServiceImpl implements CustomerService {
     private  final ProductRepository productRepository;
     private final CommentRepository commentRepository;
     private final NotificationRepository notificationRepository;
+
+    @Override
+    public CustomerDto login(String username, String password) throws PersonNotFoundException {
+
+        Customer customer=customerRepository.findCustomerByUsernameAndPassword(username,password);
+
+        if (customer == null) {
+            throw new PersonNotFoundException();
+        }
+
+        CustomerDto customerDto=new CustomerDto();
+
+        customerDto.setId(customer.getId());
+        customerDto.setName(customer.getName());
+        customerDto.setSurname(customer.getSurname());
+        customerDto.setUsername(customer.getUsername());
+        customerDto.setPassword(customer.getPassword());
+        customerDto.setAge(customer.getAge());
+        customerDto.setJoined_at(customer.getJoined_at());
+
+        return customerDto;
+
+    }
+
     @Override
     @Transactional
     public Customer saveCustomer(CustomerDto customerDto) {
@@ -39,6 +64,8 @@ public class CustomerServiceImpl implements CustomerService {
         Customer customer =new Customer();
         customer.setName(customerDto.getName());
         customer.setSurname(customerDto.getSurname());
+        customer.setUsername(customerDto.getUsername());
+        customer.setPassword(customerDto.getPassword());
         customer.setAge(customerDto.getAge());
         customer.setJoined_at(new Date());
 

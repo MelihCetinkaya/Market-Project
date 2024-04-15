@@ -1,13 +1,7 @@
 package MarketProject.backend.service.impl;
 
-import MarketProject.backend.dto.CommentDto;
-import MarketProject.backend.dto.NotificationDto;
-import MarketProject.backend.dto.ProductDto;
-import MarketProject.backend.dto.SellerDto;
-import MarketProject.backend.entity.Comment;
-import MarketProject.backend.entity.Notification;
-import MarketProject.backend.entity.Product;
-import MarketProject.backend.entity.Seller;
+import MarketProject.backend.dto.*;
+import MarketProject.backend.entity.*;
 import MarketProject.backend.entity.enums.CommentType;
 import MarketProject.backend.repository.CommentRepository;
 import MarketProject.backend.repository.NotificationRepository;
@@ -34,6 +28,25 @@ public class SellerServiceImpl implements SellerService {
     private final CommentRepository commentRepository;
 
     @Override
+    public SellerDto login(String username, String password) {
+
+        Seller seller=sellerRepository.findSellerByUsernameAndPassword(username,password);
+
+        SellerDto sellerDto=new SellerDto();
+
+        sellerDto.setId(seller.getId());
+        sellerDto.setName(seller.getName());
+        sellerDto.setSurname(seller.getSurname());
+        sellerDto.setUsername(seller.getUsername());
+        sellerDto.setPassword(seller.getPassword());
+        sellerDto.setAge(seller.getAge());
+        sellerDto.setJoined_at(seller.getJoined_at());
+
+        return sellerDto;
+
+    }
+
+    @Override
     @Transactional
     public ProductDto addProduct(ProductDto productDto) {
 
@@ -57,6 +70,8 @@ public class SellerServiceImpl implements SellerService {
         Seller seller = new Seller();
         seller.setName(sellerDto.getName());
         seller.setSurname((sellerDto.getSurname()));
+        seller.setUsername(sellerDto.getUsername());
+        seller.setPassword(sellerDto.getPassword());
         seller.setAge(sellerDto.getAge());
         seller.setJoined_at(new Date());
 

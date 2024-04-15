@@ -14,6 +14,8 @@ import java.util.Optional;
 
 public interface SellerService {
 
+ SellerDto login(String username,String password);
+
  ProductDto addProduct(ProductDto productDto);
 
  Seller saveSeller(SellerDto sellerDto);

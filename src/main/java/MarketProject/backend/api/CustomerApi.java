@@ -1,5 +1,6 @@
 package MarketProject.backend.api;
 
+import MarketProject.backend.api.exceptionApi.exceptions.PersonNotFoundException;
 import MarketProject.backend.dto.CommentDto;
 import MarketProject.backend.dto.CustomerDto;
 import MarketProject.backend.dto.ProductDto;
@@ -8,6 +9,7 @@ import MarketProject.backend.entity.Product;
 import MarketProject.backend.service.CustomerService;
 import MarketProject.backend.service.SellerService;
 import lombok.RequiredArgsConstructor;
+import org.hibernate.cache.spi.support.CacheUtils;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -22,6 +24,12 @@ public class CustomerApi {
 
     private final SellerService sellerService;
     private final CustomerService customerService;
+
+
+    @GetMapping("/login")
+    public ResponseEntity<CustomerDto> login(@RequestParam String username,@RequestParam String password) throws PersonNotFoundException {
+       return ResponseEntity.ok(customerService.login(username, password)) ;
+    }
 
     @PostMapping("/save")
     public void saveCustomer(@RequestBody CustomerDto customerDto){
