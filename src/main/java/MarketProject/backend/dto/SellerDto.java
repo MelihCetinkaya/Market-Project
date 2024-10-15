@@ -20,4 +20,11 @@ public class SellerDto extends PersonDto {
 
     private List <Comment> commented = new ArrayList<>();
 
+    private boolean accountNonExpired =true;
+    private boolean isEnabled =true;
+    private boolean accountNonLocked=true;
+    private boolean credentialsNonExpired=true;
+
+
+
 }

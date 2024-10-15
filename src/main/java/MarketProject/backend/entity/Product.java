@@ -39,13 +39,21 @@ public class Product {
     @JoinColumn(name="commentId")
     private List<Comment> comments;
 
-    /*@ManyToOne
-    @JoinColumn(name = "market_id")
-    private Market market;*/
+    @OneToMany
+    @JoinTable(name="bildirimler",joinColumns = @JoinColumn(name="productId"),
+            inverseJoinColumns = @JoinColumn(name="notification_id"))
+    private List<Notification>notifications;
+
+    @ManyToOne
+    private Market market;
 
     @Temporal(TemporalType.DATE)
     private Date added_at;
 
     @Temporal(TemporalType.DATE)
     private Date supplyDate;
+
+    @Column(length = 5, name = "Price")
+    private int price;
+
 }

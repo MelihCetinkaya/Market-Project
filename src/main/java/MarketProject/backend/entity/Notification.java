@@ -29,7 +29,7 @@ public class Notification {
     private NotificationRelation notificationRelation;
 
     @ManyToOne
-    private Product product;// could be change
+    private Product product;
 
     @ManyToOne
     private Person notified_by;

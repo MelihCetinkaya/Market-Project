@@ -22,10 +22,15 @@ public class Market {
 
     private String marketName;
 
+    @ManyToOne
+    private Seller seller;
+
     @OneToMany(cascade = {CascadeType.REMOVE})
     private List<Notification>notification_bar;
 
     @OneToMany(cascade = {CascadeType.REMOVE})
+    @JoinTable(name="Market-Ürünleri",joinColumns = @JoinColumn(name = "marketId")
+            ,inverseJoinColumns = @JoinColumn(name="productId"))
     //@JoinColumn(name = "addedProduct")
     private List<Product> products;
 

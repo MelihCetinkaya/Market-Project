@@ -1,13 +1,9 @@
 package MarketProject.backend.service;
 
-import MarketProject.backend.dto.CommentDto;
-import MarketProject.backend.dto.NotificationDto;
-import MarketProject.backend.dto.ProductDto;
-import MarketProject.backend.dto.SellerDto;
-import MarketProject.backend.entity.Comment;
-import MarketProject.backend.entity.Notification;
-import MarketProject.backend.entity.Product;
-import MarketProject.backend.entity.Seller;
+import MarketProject.backend.api.exceptionApi.exceptions.AlreadyRegisteredUsernameException;
+import MarketProject.backend.api.exceptionApi.exceptions.MarketNotFoundException;
+import MarketProject.backend.dto.*;
+import MarketProject.backend.entity.*;
 
 import java.util.List;
 import java.util.Optional;
@@ -16,13 +12,11 @@ public interface SellerService {
 
  SellerDto login(String username,String password);
 
- ProductDto addProduct(ProductDto productDto);
+ ProductDto addProduct(ProductDto productDto,String marketName) throws MarketNotFoundException;
 
- Seller saveSeller(SellerDto sellerDto);
+ Seller saveSeller(SellerDto sellerDto) throws AlreadyRegisteredUsernameException;
 
  String updateSeller(SellerDto sellerDto);  // !!!can specify
-
- List<ProductDto> getProducts();//share with customer
 
  Product getProduct(Long productId);//share with customer
 
@@ -30,4 +24,11 @@ public interface SellerService {
 
  List<NotificationDto> getMarketNotifications();
 
+ MarketDto createMarket(String username,String marketName);
+
+
+ Market chooseMArket(String marketName) throws MarketNotFoundException;
+
+
+ List<ProductDto> getProductsOfMarket(String marketName);
 }

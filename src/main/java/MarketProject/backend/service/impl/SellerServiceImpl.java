@@ -1,21 +1,17 @@
 package MarketProject.backend.service.impl;
 
+import MarketProject.backend.api.exceptionApi.exceptions.AlreadyRegisteredUsernameException;
+import MarketProject.backend.api.exceptionApi.exceptions.MarketNotFoundException;
 import MarketProject.backend.dto.*;
 import MarketProject.backend.entity.*;
 import MarketProject.backend.entity.enums.CommentType;
-import MarketProject.backend.repository.CommentRepository;
-import MarketProject.backend.repository.NotificationRepository;
-import MarketProject.backend.repository.ProductRepository;
-import MarketProject.backend.repository.SellerRepository;
+import MarketProject.backend.repository.*;
 import MarketProject.backend.service.SellerService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -26,6 +22,7 @@ public class SellerServiceImpl implements SellerService {
     private final SellerRepository sellerRepository;
     private final NotificationRepository notificationRepository;
     private final CommentRepository commentRepository;
+    private final MarketRepository marketRepository;
 
     @Override
     public SellerDto login(String username, String password) {
@@ -42,18 +39,21 @@ public class SellerServiceImpl implements SellerService {
         sellerDto.setAge(seller.getAge());
         sellerDto.setJoined_at(seller.getJoined_at());
 
+
         return sellerDto;
 
     }
 
     @Override
     @Transactional
-    public ProductDto addProduct(ProductDto productDto) {
+    public ProductDto addProduct(ProductDto productDto,String marketName) throws MarketNotFoundException {
 
         Product product = new Product();
         product.setProductName(productDto.getProductName());
         product.setStock_amount(productDto.getStock_amount());
         product.setStock_status(productDto.getStock_status());
+        product.setPrice(productDto.getPrice());
+        product.setMarket(marketRepository.findByMarketName(marketName).orElseThrow(MarketNotFoundException::new));
         product.setComments(null);
         product.setAdded_at(new Date());
         product.setSupplyDate(null);
@@ -66,19 +66,32 @@ public class SellerServiceImpl implements SellerService {
 
     @Override
     @Transactional
-    public Seller saveSeller(SellerDto sellerDto) {
-        Seller seller = new Seller();
-        seller.setName(sellerDto.getName());
-        seller.setSurname((sellerDto.getSurname()));
-        seller.setUsername(sellerDto.getUsername());
-        seller.setPassword(sellerDto.getPassword());
-        seller.setAge(sellerDto.getAge());
-        seller.setJoined_at(new Date());
+    public Seller saveSeller(SellerDto sellerDto) throws AlreadyRegisteredUsernameException {
 
-        sellerRepository.save(seller);
-        System.out.println("User "+sellerDto.getName()+" added successfully ");
+        Seller seller;
+        String username=sellerDto.getUsername();
+        seller=sellerRepository.findSellerByUsername(username);
+        if(seller!=null) {
 
-        return seller;
+            throw new AlreadyRegisteredUsernameException();
+
+        }
+
+        Seller seller1 = new Seller(); //seller throws null exception
+        seller1.setName(sellerDto.getName());
+        seller1.setSurname((sellerDto.getSurname()));
+        seller1.setUsername(sellerDto.getUsername());
+        seller1.setPassword(sellerDto.getPassword());
+        seller1.setAge(sellerDto.getAge());
+        seller1.setJoined_at(new Date());
+        //seller1.setAuthorities(new HashSet<>(Collections.singletonList(Role.SELLER)));
+
+
+
+        sellerRepository.save(seller1);
+        System.out.println("Seller "+sellerDto.getName()+" added successfully ");
+
+        return seller1;
     }
 
     @Override
@@ -86,34 +99,11 @@ public class SellerServiceImpl implements SellerService {
         return null;
     }
 
-    @Override
-    public List<ProductDto> getProducts() {
 
-        List<Product> products = productRepository.findAll();
-
-        List<ProductDto> productDtos = new ArrayList<>();
-
-        products.forEach(product -> {
-            ProductDto productDto = new ProductDto();
-            productDto.setProductId(product.getProductId());
-            productDto.setProductName(product.getProductName());
-            productDto.setStock_amount(product.getStock_amount());
-            productDto.setStock_status(product.getStock_status());
-            productDto.setComments(product.getComments().stream().map(Comment::getComment_expression)
-                    .collect(Collectors.toList()));
-
-            productDto.setAdded_at(product.getAdded_at()); //****
-            productDto.setSupplyDate(product.getSupplyDate());
-            productDtos.add(productDto);
-        });
-
-
-        return productDtos;
-    }
 
     @Override
     public Product getProduct(Long productId) {  // could be productDto
-        return productRepository.findById(productId).orElse(null);
+        return productRepository.findProductById(productId);
     }
 
     @Override
@@ -166,6 +156,52 @@ public class SellerServiceImpl implements SellerService {
         });
 
         return notificationDtos;
+    }
+
+    @Override
+    @Transactional
+    public MarketDto createMarket(String username,String marketName) {
+        Seller seller=sellerRepository.findSellerByUsername(username);
+        Market newMarket=new Market();
+        newMarket.setMarketName(marketName);
+        newMarket.setSeller(seller);
+        seller.getMarkets().add(newMarket);
+        marketRepository.save(newMarket);
+
+        MarketDto marketDto=new MarketDto();
+        marketDto.setMarketName(marketName);
+        marketDto.setOpening_time(new Date());
+        return marketDto;
+    }
+
+    @Override
+    public Market chooseMArket(String marketName) throws MarketNotFoundException {
+
+        return marketRepository.findByMarketName(marketName).orElseThrow(MarketNotFoundException::new);
+    }
+
+    @Override
+    public List<ProductDto> getProductsOfMarket(String marketName) {
+
+        List<Product> products = productRepository.findSellerProductBYMarketName(marketName);
+
+        List<ProductDto> productDtos = new ArrayList<>();
+
+        products.forEach(product -> {
+            ProductDto productDto = new ProductDto();
+            productDto.setProductId(product.getProductId());
+            productDto.setProductName(product.getProductName());
+            productDto.setStock_amount(product.getStock_amount());
+            productDto.setStock_status(product.getStock_status());
+            productDto.setComments(product.getComments().stream().map(Comment::getComment_expression)
+                    .collect(Collectors.toList()));
+
+            productDto.setAdded_at(product.getAdded_at()); //****
+            productDto.setSupplyDate(product.getSupplyDate());
+            productDtos.add(productDto);
+        });
+
+        return productDtos;
     }
 
 

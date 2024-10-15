@@ -1,5 +1,6 @@
 package MarketProject.backend.api;
 
+import MarketProject.backend.api.exceptionApi.exceptions.AlreadyRegisteredUsernameException;
 import MarketProject.backend.api.exceptionApi.exceptions.PersonNotFoundException;
 import MarketProject.backend.dto.CommentDto;
 import MarketProject.backend.dto.CustomerDto;
@@ -29,10 +30,13 @@ public class CustomerApi {
     @GetMapping("/login")
     public ResponseEntity<CustomerDto> login(@RequestParam String username,@RequestParam String password) throws PersonNotFoundException {
        return ResponseEntity.ok(customerService.login(username, password)) ;
+
+
     }
 
     @PostMapping("/save")
-    public void saveCustomer(@RequestBody CustomerDto customerDto){
+    public void saveCustomer(@RequestBody CustomerDto customerDto) throws AlreadyRegisteredUsernameException {
+
 
         customerService.saveCustomer(customerDto);
 
@@ -51,8 +55,8 @@ public class CustomerApi {
     }
 
     @PostMapping("/notification/{product_id}")
-    public void createNotification(@PathVariable Long product_id, Date date){
-        customerService.createNotification(product_id,date);
+    public void createNotification(@PathVariable Long product_id){
+        customerService.createNotification(product_id);
     }
 
     @PostMapping("/feedback")
@@ -62,7 +66,7 @@ public class CustomerApi {
 
     @GetMapping("/product")
     public ResponseEntity<List<ProductDto>>getProducts(){
-        return ResponseEntity.ok(sellerService.getProducts());
+        return ResponseEntity.ok(customerService.getProducts());
     }
 
 
@@ -70,6 +74,7 @@ public class CustomerApi {
     public ResponseEntity<Product> chooseProduct(@PathVariable Long id){
         return ResponseEntity.ok(sellerService.getProduct(id));
     }
+
 
 
 }

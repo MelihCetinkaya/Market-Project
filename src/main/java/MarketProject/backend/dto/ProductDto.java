@@ -17,4 +17,6 @@ public class ProductDto {
     private Date added_at;
     private Date supplyDate;
 
+    private int price;
+
 }

@@ -1,9 +1,10 @@
 package MarketProject.backend.service.impl;
 
+import MarketProject.backend.api.exceptionApi.exceptions.AlreadyRegisteredUsernameException;
 import MarketProject.backend.api.exceptionApi.exceptions.PersonNotFoundException;
 import MarketProject.backend.dto.CommentDto;
 import MarketProject.backend.dto.CustomerDto;
-import MarketProject.backend.dto.abstractClasses.PersonDto;
+import MarketProject.backend.dto.ProductDto;
 import MarketProject.backend.entity.Comment;
 import MarketProject.backend.entity.Customer;
 import MarketProject.backend.entity.Notification;
@@ -17,12 +18,12 @@ import MarketProject.backend.repository.NotificationRepository;
 import MarketProject.backend.repository.ProductRepository;
 import MarketProject.backend.service.CustomerService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
+import java.util.stream.Collectors;
 
 
 @Service
@@ -33,6 +34,8 @@ public class CustomerServiceImpl implements CustomerService {
     private  final ProductRepository productRepository;
     private final CommentRepository commentRepository;
     private final NotificationRepository notificationRepository;
+
+
 
     @Override
     public CustomerDto login(String username, String password) throws PersonNotFoundException {
@@ -56,24 +59,42 @@ public class CustomerServiceImpl implements CustomerService {
         return customerDto;
 
     }
+    public Customer getCustomerByUsername(String username){
 
+        return customerRepository.findCustomerByUsername(username);
+        //return customerRepository.findByUsername(username);
+    }
     @Override
     @Transactional
-    public Customer saveCustomer(CustomerDto customerDto) {
+    public Customer saveCustomer(CustomerDto customerDto) throws AlreadyRegisteredUsernameException {
 
-        Customer customer =new Customer();
-        customer.setName(customerDto.getName());
-        customer.setSurname(customerDto.getSurname());
-        customer.setUsername(customerDto.getUsername());
-        customer.setPassword(customerDto.getPassword());
-        customer.setAge(customerDto.getAge());
-        customer.setJoined_at(new Date());
+        Customer customer;
+        String username=customerDto.getUsername();
+        customer=customerRepository.findCustomerByUsername(username);
+ if(customer!=null) {
+
+     throw new AlreadyRegisteredUsernameException();
+
+ }
+
+ Customer customer1 =new Customer();   // customer throws null excp.
+
+        customer1.setName(customerDto.getName());
+        customer1.setSurname(customerDto.getSurname());
+        customer1.setUsername(customerDto.getUsername());
+        customer1.setPassword(customerDto.getPassword());
+        customer1.setAge(customerDto.getAge());
+        customer1.setJoined_at(new Date());
+        // customer1.setAccountNonExpired(true);
+        //customer1.setAccountNonLocked(false);
+
+        customer1.setBalance(customerDto.getBalance());
 
 
-        customerRepository.save(customer);
+        customerRepository.save(customer1);
         System.out.println("Customer "+customerDto.getName()+" added successfully");
 
-        return customer; //could change
+        return customer1; //could change
     }
 
     @Override
@@ -94,7 +115,7 @@ public class CustomerServiceImpl implements CustomerService {
     public Comment makeComment(String expression) {
 
         Long productId=chooseProduct();//*****
-        Product product=productRepository.findById(productId).orElse(null);// could be optional
+        Product product=productRepository.findProductById(productId);// could be optional
         Comment comment=new Comment();
         comment.setComment_expression(expression);
         comment.setProduct(product);
@@ -138,16 +159,17 @@ return comment;
 
     @Override
     @Transactional
-    public Notification createNotification(Long product_id,Date date) {
+    public Notification createNotification(Long product_id) {
 
         Notification notification=new Notification();
 
-        notification.setNotification_date(date);
+        notification.setNotification_date(new Date());
         notification.setNotificationType(NotificationType.timer);
         notification.setNotificationRelation(NotificationRelation.product);
-        notification.setProduct(productRepository.findById(product_id).orElse(null));
+        notification.setProduct(productRepository.findProductById(product_id));
         notification.setNotification_message("Notification created for product number " + product_id);
         notification.setCreated_at(new Date());
+
 
         notificationRepository.save(notification);
 
@@ -166,7 +188,31 @@ return comment;
         comment.setAdded_at(new Date());
         comment.setUpdated_at(null);
 
+    }
 
 
+    @Override
+    public List<ProductDto> getProducts() {
+
+        List<Product> products = productRepository.findAll();
+
+        List<ProductDto> productDtos = new ArrayList<>();
+
+        products.forEach(product -> {
+            ProductDto productDto = new ProductDto();
+            productDto.setProductId(product.getProductId());
+            productDto.setProductName(product.getProductName());
+            productDto.setStock_amount(product.getStock_amount());
+            productDto.setStock_status(product.getStock_status());
+            productDto.setComments(product.getComments().stream().map(Comment::getComment_expression)
+                    .collect(Collectors.toList()));
+
+            productDto.setAdded_at(product.getAdded_at()); //****
+            productDto.setSupplyDate(product.getSupplyDate());
+            productDtos.add(productDto);
+        });
+
+
+        return productDtos;
     }
 }

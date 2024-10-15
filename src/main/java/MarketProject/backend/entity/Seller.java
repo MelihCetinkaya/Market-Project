@@ -3,26 +3,32 @@ package MarketProject.backend.entity;
 import MarketProject.backend.entity.abstractClasses.Person;
 import jakarta.persistence.*;
 import lombok.*;
-import MarketProject.backend.entity.Market;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
 
+
+import java.util.*;
+
+
+
+@EqualsAndHashCode(callSuper = true)
 @Entity
-@Getter
-@Setter
+@Data
 @NoArgsConstructor
 @AllArgsConstructor
+@Builder
+public class Seller extends Person  {
 
-public class Seller extends Person {
 
 
-
-    @OneToOne
-    private Market market = null;
+    @OneToMany(cascade = {CascadeType.REMOVE})
+    @JoinTable(name="Marketlerim",joinColumns = @JoinColumn(name = "id")
+            ,inverseJoinColumns = @JoinColumn(name="marketId"))
+    private List<Market> markets;
 
     @OneToMany
     private List <Comment> commented = new ArrayList<>();
+
+
+
 
 }

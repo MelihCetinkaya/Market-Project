@@ -35,4 +35,14 @@ public abstract class PersonDto {
     private List <Comment> comments_received = new ArrayList<>();
 
    // private List <Comment> commented = new ArrayList<>();
+
+    private boolean accountNonExpired;
+    private boolean isEnabled;
+    private boolean accountNonLocked;
+    private boolean credentialsNonExpired;
+
+
+
+
+    private int balance;
 }
