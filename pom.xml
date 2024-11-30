@@ -13,17 +13,12 @@
   <artifactId>MarketProjesi</artifactId>
 
 
-  <!--  <groupId>org.example</groupId>
-  <version>1.0-SNAPSHOT</version>
-
-  -->
   <name>Archetype - MarketProjesi</name>
   <url>http://maven.apache.org</url>
 
   <properties>
     <java.version>17</java.version>
-   <!-- <hibernate.version>5.6.15.Final</hibernate.version>
-    <c3p0.version>5.6.15.Final</c3p0.version> -->
+
   </properties>
 
   <dependencies>
@@ -115,29 +110,29 @@
       <scope>test</scope>
     </dependency>
 
-     <!-- <dependency>
-     <dependency>
-       <groupId>javax.persistence</groupId>
-       <artifactId>javax.persistence-api</artifactId>
-       <version>2.2</version>
-     </dependency>
+    <!-- for reactive dependencies-->
 
-        <groupId>org.hibernate</groupId>
-        <artifactId>hibernate-core</artifactId>
-        <version>${hibernate.version}</version>
-      </dependency>
+    <dependency>
+      <groupId>org.springframework.boot</groupId>
+      <artifactId>spring-boot-starter-data-mongodb-reactive</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.springframework.boot</groupId>
+      <artifactId>spring-boot-starter-webflux</artifactId>
+    </dependency>
 
-      <dependency>
-        <groupId>org.hibernate</groupId>
-        <artifactId>hibernate-entitymanager</artifactId>
-        <version>${hibernate.version}</version>
-      </dependency>
+    <dependency>
+      <groupId>org.springframework.boot</groupId>
+      <artifactId>spring-boot-devtools</artifactId>
+      <scope>runtime</scope>
+      <optional>true</optional>
+    </dependency>
 
-      <dependency>
-        <groupId>org.hibernate</groupId>
-        <artifactId>hibernate-c3p0</artifactId>
-        <version>${c3p0.version}</version>
-      </dependency> -->
+    <dependency>
+      <groupId>io.projectreactor</groupId>
+      <artifactId>reactor-test</artifactId>
+      <scope>test</scope>
+    </dependency>
 
 
 

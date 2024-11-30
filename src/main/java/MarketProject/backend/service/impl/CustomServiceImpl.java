@@ -3,7 +3,6 @@ package MarketProject.backend.service.impl;
 import MarketProject.backend.api.exceptionApi.exceptions.AccessRestrictionException;
 import MarketProject.backend.api.exceptionApi.exceptions.InsufficientBalanceException;
 import MarketProject.backend.api.exceptionApi.exceptions.ProductNotFoundException;
-import MarketProject.backend.configuration.JwtService;
 import MarketProject.backend.entity.Customer;
 import MarketProject.backend.entity.Product;
 import MarketProject.backend.repository.CustomerRepository;

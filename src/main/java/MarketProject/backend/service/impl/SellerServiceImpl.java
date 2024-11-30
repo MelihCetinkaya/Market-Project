@@ -10,8 +10,12 @@ import MarketProject.backend.service.SellerService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
+import java.io.IOException;
 import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.stream.Collectors;
 
 @Service
@@ -24,25 +28,7 @@ public class SellerServiceImpl implements SellerService {
     private final CommentRepository commentRepository;
     private final MarketRepository marketRepository;
 
-    @Override
-    public SellerDto login(String username, String password) {
-
-        Seller seller=sellerRepository.findSellerByUsernameAndPassword(username,password);
-
-        SellerDto sellerDto=new SellerDto();
-
-        sellerDto.setId(seller.getId());
-        sellerDto.setName(seller.getName());
-        sellerDto.setSurname(seller.getSurname());
-        sellerDto.setUsername(seller.getUsername());
-        sellerDto.setPassword(seller.getPassword());
-        sellerDto.setAge(seller.getAge());
-        sellerDto.setJoined_at(seller.getJoined_at());
-
-
-        return sellerDto;
-
-    }
+    private final ConcurrentHashMap<Long, CopyOnWriteArrayList<SseEmitter>> productEmitters;
 
     @Override
     @Transactional
@@ -60,38 +46,29 @@ public class SellerServiceImpl implements SellerService {
 
         productRepository.save(product);
         System.out.println("Product added successfully");
-        return productDto;
 
-    }
 
-    @Override
-    @Transactional
-    public Seller saveSeller(SellerDto sellerDto) throws AlreadyRegisteredUsernameException {
+        CopyOnWriteArrayList<SseEmitter> emitters = productEmitters.get(product.getProductId());
 
-        Seller seller;
-        String username=sellerDto.getUsername();
-        seller=sellerRepository.findSellerByUsername(username);
-        if(seller!=null) {
+        if(emitters == null){
 
-            throw new AlreadyRegisteredUsernameException();
+            System.out.println("emitter null");
+            return productDto;
+        }
+
+        for(SseEmitter emitter : emitters){
+
+            try {
+                emitter.send(SseEmitter.event().name("The product named "+ productDto.getProductName() +
+                        "was added to stock by seller "));
+            } catch (IOException e) {
+                emitters.remove(emitter);
+            }
 
         }
 
-        Seller seller1 = new Seller(); //seller throws null exception
-        seller1.setName(sellerDto.getName());
-        seller1.setSurname((sellerDto.getSurname()));
-        seller1.setUsername(sellerDto.getUsername());
-        seller1.setPassword(sellerDto.getPassword());
-        seller1.setAge(sellerDto.getAge());
-        seller1.setJoined_at(new Date());
-        //seller1.setAuthorities(new HashSet<>(Collections.singletonList(Role.SELLER)));
+        return productDto;
 
-
-
-        sellerRepository.save(seller1);
-        System.out.println("Seller "+sellerDto.getName()+" added successfully ");
-
-        return seller1;
     }
 
     @Override

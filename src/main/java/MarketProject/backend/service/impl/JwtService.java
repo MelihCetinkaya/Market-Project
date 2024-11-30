@@ -1,4 +1,4 @@
-package MarketProject.backend.configuration;
+package MarketProject.backend.service.impl;
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;

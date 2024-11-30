@@ -1,19 +1,21 @@
-package MarketProject.backend.configuration;
+package MarketProject.backend.service.impl;
 
 import MarketProject.backend.api.exceptionApi.exceptions.AlreadyRegisteredUsernameException;
 import MarketProject.backend.api.exceptionApi.exceptions.UnmatchedPersonException;
 import MarketProject.backend.dto.CustomerDto;
 import MarketProject.backend.dto.SellerDto;
+import MarketProject.backend.dto.responseDto.UserRequest;
+import MarketProject.backend.dto.responseDto.UserResponse;
 import MarketProject.backend.entity.Customer;
 import MarketProject.backend.entity.Seller;
 import MarketProject.backend.entity.enums.Role;
 import MarketProject.backend.repository.CustomerRepository;
 import MarketProject.backend.repository.PersonRepository;
 import MarketProject.backend.repository.SellerRepository;
+
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -83,7 +85,7 @@ public class AuthenticationService {
         customer1.setName(customerDto.getName());
         customer1.setSurname(customerDto.getSurname());
         customer1.setUsername(customerDto.getUsername());
-        customer1.setPassword(customerDto.getPassword());
+        customer1.setPassword(passwordEncoder.encode(customerDto.getPassword()));
         customer1.setAge(customerDto.getAge());
         customer1.setJoined_at(new Date());
         customer1.setBalance(customerDto.getBalance());

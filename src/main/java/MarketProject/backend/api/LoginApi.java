@@ -1,9 +1,9 @@
 package MarketProject.backend.api;
 
 import MarketProject.backend.api.exceptionApi.exceptions.AlreadyRegisteredUsernameException;
-import MarketProject.backend.configuration.AuthenticationService;
-import MarketProject.backend.configuration.UserRequest;
-import MarketProject.backend.configuration.UserResponse;
+import MarketProject.backend.service.impl.AuthenticationService;
+import MarketProject.backend.dto.responseDto.UserRequest;
+import MarketProject.backend.dto.responseDto.UserResponse;
 import MarketProject.backend.dto.CustomerDto;
 import MarketProject.backend.dto.SellerDto;
 import lombok.RequiredArgsConstructor;

@@ -10,15 +10,12 @@ import MarketProject.backend.entity.Comment;
 import MarketProject.backend.entity.Customer;
 import MarketProject.backend.entity.Notification;
 import MarketProject.backend.entity.Seller;
+import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
 import java.util.Date;
 import java.util.List;
 
 public interface CustomerService {
-
-    CustomerDto login(String username,String password) throws PersonNotFoundException;
-
-    Customer saveCustomer(CustomerDto customerDto) throws AlreadyRegisteredUsernameException;
 
     String updateCustomer(CustomerDto customerDto);  // !!!can specify
 
@@ -28,7 +25,9 @@ public interface CustomerService {
 
     List<CommentDto> getComments(Long customer_id);
 
-    Notification createNotification(Long product_id); //can be list
+    SseEmitter createNotification(String token, String username, Long product_id); //can be list
+
+    void dispatchEvents(Long product_id);
 
     void makeFeedback(String expression);
 

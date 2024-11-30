@@ -22,13 +22,6 @@ public class SellerApi {
 
     private final SellerService sellerService;
 
-
-    @GetMapping("/login")
-    public ResponseEntity<SellerDto> login(@RequestParam String username, @RequestParam String password){
-
-        return ResponseEntity.ok(sellerService.login(username, password)) ;
-    }
-
     @GetMapping("/productsOfMarket")
     public ResponseEntity<List<ProductDto>>getProductsOfMarket(@RequestParam String marketName){
 
@@ -44,12 +37,6 @@ public class SellerApi {
 
         return ResponseEntity.ok(sellerService.addProduct(productDto,marketName));
 
-    }
-
-    @PostMapping("/save")
-    public ResponseEntity<Seller> saveSeller(@RequestBody SellerDto sellerDto) throws AlreadyRegisteredUsernameException {
-
-        return ResponseEntity.ok(sellerService.saveSeller(sellerDto));
     }
 
     @GetMapping("/product/{product_id}")

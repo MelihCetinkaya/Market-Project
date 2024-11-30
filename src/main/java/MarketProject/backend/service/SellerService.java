@@ -10,11 +10,7 @@ import java.util.Optional;
 
 public interface SellerService {
 
- SellerDto login(String username,String password);
-
  ProductDto addProduct(ProductDto productDto,String marketName) throws MarketNotFoundException;
-
- Seller saveSeller(SellerDto sellerDto) throws AlreadyRegisteredUsernameException;
 
  String updateSeller(SellerDto sellerDto);  // !!!can specify
 

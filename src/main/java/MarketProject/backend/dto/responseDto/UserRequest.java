@@ -1,4 +1,4 @@
-package MarketProject.backend.configuration;
+package MarketProject.backend.dto.responseDto;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;

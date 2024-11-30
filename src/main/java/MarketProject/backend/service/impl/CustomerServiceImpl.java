@@ -21,8 +21,12 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
+import java.io.IOException;
 import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.stream.Collectors;
 
 
@@ -34,68 +38,10 @@ public class CustomerServiceImpl implements CustomerService {
     private  final ProductRepository productRepository;
     private final CommentRepository commentRepository;
     private final NotificationRepository notificationRepository;
+    private final JwtService jwtService;
 
+    private final ConcurrentHashMap<Long, CopyOnWriteArrayList<SseEmitter>> productEmitters;
 
-
-    @Override
-    public CustomerDto login(String username, String password) throws PersonNotFoundException {
-
-        Customer customer=customerRepository.findCustomerByUsernameAndPassword(username,password);
-
-        if (customer == null) {
-            throw new PersonNotFoundException();
-        }
-
-        CustomerDto customerDto=new CustomerDto();
-
-        customerDto.setId(customer.getId());
-        customerDto.setName(customer.getName());
-        customerDto.setSurname(customer.getSurname());
-        customerDto.setUsername(customer.getUsername());
-        customerDto.setPassword(customer.getPassword());
-        customerDto.setAge(customer.getAge());
-        customerDto.setJoined_at(customer.getJoined_at());
-
-        return customerDto;
-
-    }
-    public Customer getCustomerByUsername(String username){
-
-        return customerRepository.findCustomerByUsername(username);
-        //return customerRepository.findByUsername(username);
-    }
-    @Override
-    @Transactional
-    public Customer saveCustomer(CustomerDto customerDto) throws AlreadyRegisteredUsernameException {
-
-        Customer customer;
-        String username=customerDto.getUsername();
-        customer=customerRepository.findCustomerByUsername(username);
- if(customer!=null) {
-
-     throw new AlreadyRegisteredUsernameException();
-
- }
-
- Customer customer1 =new Customer();   // customer throws null excp.
-
-        customer1.setName(customerDto.getName());
-        customer1.setSurname(customerDto.getSurname());
-        customer1.setUsername(customerDto.getUsername());
-        customer1.setPassword(customerDto.getPassword());
-        customer1.setAge(customerDto.getAge());
-        customer1.setJoined_at(new Date());
-        // customer1.setAccountNonExpired(true);
-        //customer1.setAccountNonLocked(false);
-
-        customer1.setBalance(customerDto.getBalance());
-
-
-        customerRepository.save(customer1);
-        System.out.println("Customer "+customerDto.getName()+" added successfully");
-
-        return customer1; //could change
-    }
 
     @Override
     public String updateCustomer(CustomerDto customerDto) {
@@ -157,24 +103,60 @@ return comment;
         return commentDtos;
     }
 
+    //List<SseEmitter> emitters =new CopyOnWriteArrayList<>();
+    //ConcurrentHashMap<Long, CopyOnWriteArrayList<SseEmitter>> productEmitters = new ConcurrentHashMap<>();
+
     @Override
     @Transactional
-    public Notification createNotification(Long product_id) {
+    public SseEmitter createNotification(String token,String username,Long product_id) {
 
-        Notification notification=new Notification();
+        if (jwtService.checkTokenUsername(token,username)) {
 
-        notification.setNotification_date(new Date());
-        notification.setNotificationType(NotificationType.timer);
-        notification.setNotificationRelation(NotificationRelation.product);
-        notification.setProduct(productRepository.findProductById(product_id));
-        notification.setNotification_message("Notification created for product number " + product_id);
-        notification.setCreated_at(new Date());
+            SseEmitter sseEmitter=new SseEmitter(30_000L);
+
+            productEmitters.computeIfAbsent(product_id, k -> new CopyOnWriteArrayList<>()).add(sseEmitter);
+
+            try {
+                sseEmitter.send(SseEmitter.event().name("INIT"));
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
 
 
-        notificationRepository.save(notification);
+           /* Notification notification=new Notification();
 
-        return notification;
+            notification.setNotification_date(new Date());
+            notification.setNotificationType(NotificationType.timer);
+            notification.setNotificationRelation(NotificationRelation.product);
+            notification.setProduct(productRepository.findProductById(product_id));
+            notification.setNotification_message("Notification created for product number " + product_id);
+            notification.setCreated_at(new Date());
+
+
+            notificationRepository.save(notification);*/
+            System.out.println("abonelik eklendi");
+            return sseEmitter;
+        }
+
+
+        return null;  //  throw new exception
     }
+
+    public void dispatchEvents(Long product_id){
+
+        CopyOnWriteArrayList<SseEmitter> emitters = productEmitters.get(product_id);
+
+        for(SseEmitter emitter : emitters){
+
+            try {
+                emitter.send(SseEmitter.event().name("latest name"));
+            } catch (IOException e) {
+                emitters.remove(emitter);
+            }
+
+        }
+    }
+
 
     @Override
     public void makeFeedback(String expression) {

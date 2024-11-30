@@ -4,7 +4,7 @@ import MarketProject.backend.api.exceptionApi.exceptions.AccessRestrictionExcept
 import MarketProject.backend.api.exceptionApi.exceptions.InsufficientBalanceException;
 import MarketProject.backend.api.exceptionApi.exceptions.ProductNotFoundException;
 import MarketProject.backend.api.exceptionApi.exceptions.UnmatchedPersonException;
-import MarketProject.backend.configuration.AuthenticationService;
+import MarketProject.backend.service.impl.AuthenticationService;
 import MarketProject.backend.entity.Customer;
 import MarketProject.backend.service.CustomService;
 import lombok.RequiredArgsConstructor;

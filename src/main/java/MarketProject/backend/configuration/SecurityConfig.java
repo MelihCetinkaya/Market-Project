@@ -27,10 +27,10 @@ public class SecurityConfig {
         httpSecurity
                 .csrf(AbstractHttpConfigurer::disable) // CSRF'yi disable etmek
                 .authorizeHttpRequests((authz) -> authz
-                        .requestMatchers("/login/**","/custom/**").permitAll()
+                        .requestMatchers("/login/**","/api/**","/api2/**").permitAll()
                         //.requestMatchers("/seller/products").authenticated()
                         .requestMatchers("/seller/**").hasRole("SELLER")
-                        .requestMatchers("/customer/**").hasRole("CUSTOMER")
+                        .requestMatchers("/customer/**","/custom/**").hasRole("CUSTOMER")
 
                 )
                 .sessionManagement((session) -> session

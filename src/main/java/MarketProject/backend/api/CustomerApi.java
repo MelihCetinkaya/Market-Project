@@ -11,9 +11,12 @@ import MarketProject.backend.service.CustomerService;
 import MarketProject.backend.service.SellerService;
 import lombok.RequiredArgsConstructor;
 import org.hibernate.cache.spi.support.CacheUtils;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
+import java.io.IOException;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
@@ -25,22 +28,6 @@ public class CustomerApi {
 
     private final SellerService sellerService;
     private final CustomerService customerService;
-
-
-    @GetMapping("/login")
-    public ResponseEntity<CustomerDto> login(@RequestParam String username,@RequestParam String password) throws PersonNotFoundException {
-       return ResponseEntity.ok(customerService.login(username, password)) ;
-
-
-    }
-
-    @PostMapping("/save")
-    public void saveCustomer(@RequestBody CustomerDto customerDto) throws AlreadyRegisteredUsernameException {
-
-
-        customerService.saveCustomer(customerDto);
-
-    }
 
     @PostMapping("/comment")
     public ResponseEntity<Comment> makeComment(String expression){
@@ -54,9 +41,18 @@ public class CustomerApi {
         return ResponseEntity.ok(customerService.getComments(id));
     }
 
-    @PostMapping("/notification/{product_id}")
-    public void createNotification(@PathVariable Long product_id){
-        customerService.createNotification(product_id);
+    @GetMapping(value="/notification/{username}",consumes = MediaType.ALL_VALUE)
+    public SseEmitter createNotification(@RequestHeader("Authorization") String token,
+                                   @PathVariable String username,
+                                   @RequestParam Long product_id){
+       return customerService.createNotification(token,username,product_id);
+    }
+
+    @PostMapping("/dispatchEvents")
+    public void dispatchEventsToClients(@RequestParam Long product_id){
+
+        customerService.dispatchEvents(product_id);
+
     }
 
     @PostMapping("/feedback")
@@ -64,7 +60,7 @@ public class CustomerApi {
      customerService.makeFeedback(expression);
     }
 
-    @GetMapping("/product")
+    @GetMapping("/products")
     public ResponseEntity<List<ProductDto>>getProducts(){
         return ResponseEntity.ok(customerService.getProducts());
     }
