@@ -2,10 +2,7 @@ package MarketProject.backend.service;
 
 import MarketProject.backend.api.exceptionApi.exceptions.AlreadyRegisteredUsernameException;
 import MarketProject.backend.api.exceptionApi.exceptions.PersonNotFoundException;
-import MarketProject.backend.dto.CommentDto;
-import MarketProject.backend.dto.CustomerDto;
-import MarketProject.backend.dto.ProductDto;
-import MarketProject.backend.dto.SellerDto;
+import MarketProject.backend.dto.*;
 import MarketProject.backend.entity.Comment;
 import MarketProject.backend.entity.Customer;
 import MarketProject.backend.entity.Notification;
@@ -33,6 +30,5 @@ public interface CustomerService {
 
     List<ProductDto> getProducts();
 
-
-
+    List<MarketDto> getMarkets();
 }

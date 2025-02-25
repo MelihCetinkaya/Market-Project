@@ -3,6 +3,8 @@ package MarketProject.backend.service.impl;
 import MarketProject.backend.api.exceptionApi.exceptions.AlreadyRegisteredUsernameException;
 import MarketProject.backend.api.exceptionApi.exceptions.MarketNotFoundException;
 import MarketProject.backend.dto.*;
+import MarketProject.backend.dto.FuncDtos.MarketNameDto;
+import MarketProject.backend.dto.FuncDtos.SellerProfileDto;
 import MarketProject.backend.entity.*;
 import MarketProject.backend.entity.enums.CommentType;
 import MarketProject.backend.repository.*;
@@ -32,7 +34,7 @@ public class SellerServiceImpl implements SellerService {
 
     @Override
     @Transactional
-    public ProductDto addProduct(ProductDto productDto,String marketName) throws MarketNotFoundException {
+    public void addProduct(ProductDto productDto,String marketName) throws MarketNotFoundException {
 
         Product product = new Product();
         product.setProductName(productDto.getProductName());
@@ -53,21 +55,22 @@ public class SellerServiceImpl implements SellerService {
         if(emitters == null){
 
             System.out.println("emitter null");
-            return productDto;
+
         }
 
-        for(SseEmitter emitter : emitters){
+       else {
+            for (SseEmitter emitter : emitters) {
 
-            try {
-                emitter.send(SseEmitter.event().name("The product named "+ productDto.getProductName() +
-                        "was added to stock by seller "));
-            } catch (IOException e) {
-                emitters.remove(emitter);
+                try {
+                    emitter.send(SseEmitter.event().name("The product named " + productDto.getProductName() +
+                            "was added to stock by seller "));
+                } catch (IOException e) {
+                    emitters.remove(emitter);
+                }
+
             }
-
         }
 
-        return productDto;
 
     }
 
@@ -170,6 +173,7 @@ public class SellerServiceImpl implements SellerService {
             productDto.setProductName(product.getProductName());
             productDto.setStock_amount(product.getStock_amount());
             productDto.setStock_status(product.getStock_status());
+            productDto.setPrice(product.getPrice());
             productDto.setComments(product.getComments().stream().map(Comment::getComment_expression)
                     .collect(Collectors.toList()));
 
@@ -179,6 +183,39 @@ public class SellerServiceImpl implements SellerService {
         });
 
         return productDtos;
+    }
+
+    @Override
+    public SellerProfileDto getMyProfile(String username) {
+
+       Seller seller= sellerRepository.findSellerByUsername(username);
+       SellerProfileDto sellerProfileDto = new SellerProfileDto();
+       sellerProfileDto.setName(seller.getName());
+       sellerProfileDto.setSurname(seller.getSurname());
+       sellerProfileDto.setAge(seller.getAge());
+       sellerProfileDto.setUsername(seller.getUsername());
+
+
+        return sellerProfileDto;
+    }
+
+    @Override
+    public List<MarketNameDto> getMyMarkets(String username) {
+
+        Seller seller= sellerRepository.findSellerByUsername(username);
+        List<String>marketNames=marketRepository.findSellerMarkets(seller.getUsername());
+        List<MarketNameDto> marketNameDtos =new ArrayList<>();
+        
+        marketNames.forEach(marketName->{
+            
+             MarketNameDto marketNameDto =new MarketNameDto();
+             marketNameDto.setMarketName(marketName);
+             marketNameDtos.add(marketNameDto);
+            
+        });
+        
+        
+        return marketNameDtos;
     }
 
 

@@ -3,6 +3,7 @@ package MarketProject.backend.entity;
 import MarketProject.backend.entity.abstractClasses.Person;
 import MarketProject.backend.entity.enums.NotificationRelation;
 import MarketProject.backend.entity.enums.NotificationType;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;

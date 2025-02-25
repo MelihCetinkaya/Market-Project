@@ -1,24 +1,15 @@
 package MarketProject.backend.service.impl;
 
-import MarketProject.backend.api.exceptionApi.exceptions.AlreadyRegisteredUsernameException;
-import MarketProject.backend.api.exceptionApi.exceptions.PersonNotFoundException;
+
 import MarketProject.backend.dto.CommentDto;
 import MarketProject.backend.dto.CustomerDto;
+import MarketProject.backend.dto.MarketDto;
 import MarketProject.backend.dto.ProductDto;
-import MarketProject.backend.entity.Comment;
-import MarketProject.backend.entity.Customer;
-import MarketProject.backend.entity.Notification;
-import MarketProject.backend.entity.Product;
+import MarketProject.backend.entity.*;
 import MarketProject.backend.entity.enums.CommentType;
-import MarketProject.backend.entity.enums.NotificationRelation;
-import MarketProject.backend.entity.enums.NotificationType;
-import MarketProject.backend.repository.CommentRepository;
-import MarketProject.backend.repository.CustomerRepository;
-import MarketProject.backend.repository.NotificationRepository;
-import MarketProject.backend.repository.ProductRepository;
+import MarketProject.backend.repository.*;
 import MarketProject.backend.service.CustomerService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
@@ -34,9 +25,10 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class CustomerServiceImpl implements CustomerService {
 
-    private  final CustomerRepository customerRepository;
-    private  final ProductRepository productRepository;
+    private final CustomerRepository customerRepository;
+    private final ProductRepository productRepository;
     private final CommentRepository commentRepository;
+    private final MarketRepository marketRepository;
     private final NotificationRepository notificationRepository;
     private final JwtService jwtService;
 
@@ -196,5 +188,26 @@ return comment;
 
 
         return productDtos;
+    }
+
+    @Override
+    public List<MarketDto> getMarkets() {
+
+        List<Market>markets=marketRepository.getMarkets();
+        List<MarketDto>marketDtos=new ArrayList<>();
+
+        markets.forEach(market ->{
+
+            MarketDto marketDto =new MarketDto();
+
+            marketDto.setMarketName(market.getMarketName());
+            marketDto.setMarketId(market.getMarketId());
+            marketDto.setOpening_time(market.getOpening_time());
+            marketDto.setClosing_time(market.getClosing_time());
+
+            marketDtos.add(marketDto);
+        });
+
+        return marketDtos;
     }
 }

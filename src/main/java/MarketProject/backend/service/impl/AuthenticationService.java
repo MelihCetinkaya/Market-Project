@@ -88,7 +88,7 @@ public class AuthenticationService {
         customer1.setPassword(passwordEncoder.encode(customerDto.getPassword()));
         customer1.setAge(customerDto.getAge());
         customer1.setJoined_at(new Date());
-        customer1.setBalance(customerDto.getBalance());
+        //customer1.setBalance(customerDto.getBalance());
         customer1.setRole(Role.ROLE_CUSTOMER);
 
         customerRepository.save(customer1);

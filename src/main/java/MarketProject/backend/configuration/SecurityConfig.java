@@ -1,6 +1,5 @@
 package MarketProject.backend.configuration;
 
-import MarketProject.backend.entity.enums.Role;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -27,7 +26,7 @@ public class SecurityConfig {
         httpSecurity
                 .csrf(AbstractHttpConfigurer::disable) // CSRF'yi disable etmek
                 .authorizeHttpRequests((authz) -> authz
-                        .requestMatchers("/login/**","/api/**","/api2/**").permitAll()
+                        .requestMatchers("/login/**","/api/**","/api2/**","/chat/**").permitAll()
                         //.requestMatchers("/seller/products").authenticated()
                         .requestMatchers("/seller/**").hasRole("SELLER")
                         .requestMatchers("/customer/**","/custom/**").hasRole("CUSTOMER")
@@ -43,21 +42,5 @@ public class SecurityConfig {
     }
 
 
-    /*
-    @Bean
-    public SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity)throws Exception{
 
-        httpSecurity.csrf().disable()
-                .authorizeHttpRequests()
-                .requestMatchers("/login/**").permitAll()
-                .anyRequest().authenticated()
-                .and()
-                .sessionManagement()
-                .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
-                .and()
-                .authenticationProvider(authenticationProvider)
-                .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
-
-        return httpSecurity.build();
-    } */
 }

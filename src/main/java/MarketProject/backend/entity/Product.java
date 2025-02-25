@@ -1,5 +1,6 @@
 package MarketProject.backend.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -45,6 +46,7 @@ public class Product {
     private List<Notification>notifications;
 
     @ManyToOne
+    @JsonIgnore // sonsuz döngüye neden oluyordu  (@JsonManagedReference ve @JsonBackReference)
     private Market market;
 
     @Temporal(TemporalType.DATE)

@@ -3,6 +3,8 @@ package MarketProject.backend.api;
 import MarketProject.backend.api.exceptionApi.exceptions.AlreadyRegisteredUsernameException;
 import MarketProject.backend.api.exceptionApi.exceptions.MarketNotFoundException;
 import MarketProject.backend.dto.*;
+import MarketProject.backend.dto.FuncDtos.MarketNameDto;
+import MarketProject.backend.dto.FuncDtos.SellerProfileDto;
 import MarketProject.backend.entity.Comment;
 import MarketProject.backend.entity.Market;
 import MarketProject.backend.entity.Product;
@@ -30,12 +32,12 @@ public class SellerApi {
 
     }
 
-   @PostMapping("/add")
-    public ResponseEntity<ProductDto> addProduct(@RequestBody ProductDto productDto,@RequestParam String marketName) throws MarketNotFoundException {
+   @PostMapping("/addProduct")
+    public void addProduct(@RequestBody ProductDto productDto,@RequestParam String marketName) throws MarketNotFoundException {
 
         //ProductDto ve marketName birleşebilir
 
-        return ResponseEntity.ok(sellerService.addProduct(productDto,marketName));
+         sellerService.addProduct(productDto,marketName);
 
     }
 
@@ -67,4 +69,13 @@ public class SellerApi {
 
         return ResponseEntity.ok(sellerService.chooseMArket(marketName));
     }
+    @GetMapping("/getMyProfile")
+    public ResponseEntity<SellerProfileDto> getMyProfile(@RequestParam String username){
+        return ResponseEntity.ok(sellerService.getMyProfile(username));
+    }
+    @GetMapping("/getMyMarkets")
+    public ResponseEntity<List<MarketNameDto>> getMyMarkets(@RequestParam String username){
+        return ResponseEntity.ok(sellerService.getMyMarkets(username));
+    }
+
 }

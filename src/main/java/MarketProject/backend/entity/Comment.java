@@ -1,6 +1,7 @@
 package MarketProject.backend.entity;
 
 import MarketProject.backend.entity.enums.CommentType;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
 

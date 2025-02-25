@@ -4,6 +4,7 @@ import MarketProject.backend.api.exceptionApi.exceptions.AlreadyRegisteredUserna
 import MarketProject.backend.api.exceptionApi.exceptions.PersonNotFoundException;
 import MarketProject.backend.dto.CommentDto;
 import MarketProject.backend.dto.CustomerDto;
+import MarketProject.backend.dto.MarketDto;
 import MarketProject.backend.dto.ProductDto;
 import MarketProject.backend.entity.Comment;
 import MarketProject.backend.entity.Product;
@@ -71,6 +72,9 @@ public class CustomerApi {
         return ResponseEntity.ok(sellerService.getProduct(id));
     }
 
-
+    @GetMapping("/markets")
+    public ResponseEntity<List<MarketDto>> getMarkets(){
+        return ResponseEntity.ok(customerService.getMarkets());
+    }
 
 }
