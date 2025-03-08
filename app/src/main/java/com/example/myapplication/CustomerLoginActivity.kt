@@ -8,6 +8,7 @@ import android.widget.EditText
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import com.example.myapplication.RetrofitInstance.RetrofitInstance
 import com.example.myapplication.api.CustomerApiService
 import com.example.myapplication.model.Customer
 import retrofit2.Call
@@ -23,7 +24,6 @@ class CustomerLoginActivity : AppCompatActivity() {
     private lateinit var passwordInput: EditText
     private lateinit var loginButton: Button
     private lateinit var registerLink: TextView
-    private lateinit var customerApiService: CustomerApiService
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -35,20 +35,7 @@ class CustomerLoginActivity : AppCompatActivity() {
         loginButton = findViewById(R.id.loginButton)
         registerLink = findViewById(R.id.registerLink)
 
-        // Initialize Retrofit
-        val client = OkHttpClient.Builder()
-            .connectTimeout(15, TimeUnit.SECONDS)
-            .readTimeout(15, TimeUnit.SECONDS)
-            .writeTimeout(15, TimeUnit.SECONDS)
-            .build()
 
-        val retrofit = Retrofit.Builder()
-            .baseUrl("http://192.168.109.162:8085/")
-            .client(client)
-            .addConverterFactory(GsonConverterFactory.create())
-            .build()
-
-        customerApiService = retrofit.create(CustomerApiService::class.java)
 
         // Set click listeners
         loginButton.setOnClickListener {
@@ -77,7 +64,7 @@ class CustomerLoginActivity : AppCompatActivity() {
         Log.d("CustomerLogin", "Attempting login with username: $username")
         Log.d("CustomerLogin", "Request data: $loginData")
 
-        customerApiService.loginCustomer(loginData).enqueue(object : Callback<Customer> {
+        RetrofitInstance.CustomerApi.loginCustomer(loginData).enqueue(object : Callback<Customer> {
             override fun onResponse(call: Call<Customer>, response: Response<Customer>) {
                 Log.d("CustomerLogin", "Response code: ${response.code()}")
                 

@@ -6,6 +6,7 @@ import android.util.Log
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import com.example.myapplication.RetrofitInstance.RetrofitInstance
 import com.example.myapplication.api.AdminApiService
 import com.example.myapplication.api.CustomerApiService
 import com.example.myapplication.model.Admin
@@ -27,27 +28,12 @@ class LoginActivity : AppCompatActivity() {
     private lateinit var registerAsCustomerLink: TextView
     private lateinit var registerAsSellerLink: TextView
     private lateinit var loginAsSellerLink: TextView
-    private lateinit var customerApiService: CustomerApiService
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_login)
 
-        // Create OkHttpClient
-        val client = OkHttpClient.Builder()
-            .connectTimeout(15, TimeUnit.SECONDS)
-            .readTimeout(15, TimeUnit.SECONDS)
-            .writeTimeout(15, TimeUnit.SECONDS)
-            .build()
-
-        // Initialize Retrofit
-        val retrofit = Retrofit.Builder()
-            .baseUrl("http://192.168.109.162:8085/")
-            .client(client)
-            .addConverterFactory(GsonConverterFactory.create())
-            .build()
-
-        customerApiService = retrofit.create(CustomerApiService::class.java)
 
         // Initialize views
         usernameInput = findViewById(R.id.usernameInput)
@@ -66,12 +52,10 @@ class LoginActivity : AppCompatActivity() {
                 Toast.makeText(this, "Please fill all fields", Toast.LENGTH_SHORT).show()
                 return@setOnClickListener
             }
-
-            Log.d("LoginAPI", "Making API call to: ${retrofit.baseUrl()}login/authCustomer")
             
             // Call API to check credentials
             val credentials = mapOf("username" to username, "password" to password)
-            customerApiService.loginCustomer(credentials).enqueue(object : Callback<Customer> {
+            RetrofitInstance.CustomerApi.loginCustomer(credentials).enqueue(object : Callback<Customer> {
                 override fun onResponse(call: Call<Customer>, response: Response<Customer>) {
                     Log.d("LoginAPI", "Response Code: ${response.code()}")
                     Log.d("LoginAPI", "Response Body: ${response.body()}")

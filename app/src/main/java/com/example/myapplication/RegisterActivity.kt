@@ -5,6 +5,7 @@ import android.util.Log
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import com.example.myapplication.RetrofitInstance.RetrofitInstance
 import com.example.myapplication.api.CustomerApiService
 import com.example.myapplication.api.SellerApiService
 import com.example.myapplication.model.Customer
@@ -29,8 +30,6 @@ class RegisterActivity : AppCompatActivity() {
     private lateinit var confirmPasswordInput: TextInputEditText
     private lateinit var registerButton: MaterialButton
     private lateinit var userType: String
-    private lateinit var sellerApiService: SellerApiService
-    private lateinit var customerApiService: CustomerApiService
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -38,23 +37,6 @@ class RegisterActivity : AppCompatActivity() {
 
         // Get user type from intent
         userType = intent.getStringExtra("userType") ?: "customer"
-
-        // Create OkHttpClient
-        val client = OkHttpClient.Builder()
-            .connectTimeout(15, TimeUnit.SECONDS)
-            .readTimeout(15, TimeUnit.SECONDS)
-            .writeTimeout(15, TimeUnit.SECONDS)
-            .build()
-
-        // Initialize Retrofit
-        val retrofit = Retrofit.Builder()
-            .baseUrl("http://192.168.109.162:8085/") // 192.168.109.162,10.39.194.211
-            .client(client)
-            .addConverterFactory(GsonConverterFactory.create())
-            .build()
-
-        sellerApiService = retrofit.create(SellerApiService::class.java)
-        customerApiService = retrofit.create(CustomerApiService::class.java)
 
         // Initialize views
         titleText = findViewById(R.id.titleText)
@@ -116,7 +98,7 @@ class RegisterActivity : AppCompatActivity() {
                             val seller = Seller(name, surname, ageInt, username, password)
                             
                             Log.d("RegisterAPI", "Registering seller: $seller")
-                            sellerApiService.registerSeller(seller).enqueue(object : Callback<Seller> {
+                            RetrofitInstance.SellerApi.registerSeller(seller).enqueue(object : Callback<Seller> {
                                 override fun onResponse(call: Call<Seller>, response: Response<Seller>) {
                                     Log.d("RegisterAPI", "Response Code: ${response.code()}")
                                     Log.d("RegisterAPI", "Response Body: ${response.body()}")
@@ -140,7 +122,7 @@ class RegisterActivity : AppCompatActivity() {
                                 ageInt.toString(), username, password)
                             
                             Log.d("RegisterAPI", "Registering customer: $customer")
-                            customerApiService.registerCustomer(customer).enqueue(object : Callback<Customer> {
+                            RetrofitInstance.CustomerApi.registerCustomer(customer).enqueue(object : Callback<Customer> {
                                 override fun onResponse(call: Call<Customer>, response: Response<Customer>) {
                                     Log.d("RegisterAPI", "Response Code: ${response.code()}")
                                     Log.d("RegisterAPI", "Response Body: ${response.body()}")

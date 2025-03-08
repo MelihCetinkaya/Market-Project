@@ -4,10 +4,10 @@
     <selectionStates>
       <SelectionState runConfigName="app">
         <option name="selectionMode" value="DROPDOWN" />
-        <DropdownSelection timestamp="2025-02-18T14:12:16.183560100Z">
+        <DropdownSelection timestamp="2025-03-07T19:37:59.950743700Z">
           <Target type="DEFAULT_BOOT">
             <handle>
-              <DeviceId pluginId="Default" identifier="serial=10.104.74.61:5555;connection=0cc6b66c" />
+              <DeviceId pluginId="LocalEmulator" identifier="path=C:\Users\melih\.android\avd\Pixel_2_API_35_oppo_a16_.avd" />
             </handle>
           </Target>
         </DropdownSelection>

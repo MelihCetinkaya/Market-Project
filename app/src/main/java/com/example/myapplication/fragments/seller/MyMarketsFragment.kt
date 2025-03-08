@@ -15,6 +15,7 @@ import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.myapplication.MarketDetailActivity
 import com.example.myapplication.R
+import com.example.myapplication.RetrofitInstance.RetrofitInstance
 import com.example.myapplication.api.SellerApiService
 import com.example.myapplication.model.Market
 import com.google.android.material.button.MaterialButton
@@ -29,7 +30,6 @@ import okhttp3.OkHttpClient
 import java.util.concurrent.TimeUnit
 
 class MyMarketsFragment : Fragment() {
-    private lateinit var sellerApiService: SellerApiService
     private lateinit var recyclerView: RecyclerView
     private lateinit var marketsAdapter: MarketsAdapter
 
@@ -50,21 +50,6 @@ class MyMarketsFragment : Fragment() {
         marketsAdapter = MarketsAdapter()
         recyclerView.adapter = marketsAdapter
 
-        // Initialize Retrofit
-        val client = OkHttpClient.Builder()
-            .connectTimeout(15, TimeUnit.SECONDS)
-            .readTimeout(15, TimeUnit.SECONDS)
-            .writeTimeout(15, TimeUnit.SECONDS)
-            .build()
-
-        val retrofit = Retrofit.Builder()
-            .baseUrl("http://192.168.109.162:8085/")
-            .client(client)
-            .addConverterFactory(GsonConverterFactory.create())
-            .build()
-
-        sellerApiService = retrofit.create(SellerApiService::class.java)
-
         // Set click listener for add market button
         view.findViewById<FloatingActionButton>(R.id.addMarketButton).setOnClickListener {
             showCreateMarketDialog()
@@ -83,7 +68,7 @@ class MyMarketsFragment : Fragment() {
         Log.d("MarketAPI", "Token: Bearer $token")
 
         if (username.isNotEmpty() && token.isNotEmpty()) {
-            sellerApiService.getMyMarkets("Bearer $token", username).enqueue(object : Callback<List<Market>> {
+            RetrofitInstance.SellerApi.getMyMarkets("Bearer $token", username).enqueue(object : Callback<List<Market>> {
                 override fun onResponse(call: Call<List<Market>>, response: Response<List<Market>>) {
                     Log.d("MarketAPI", "Response code: ${response.code()}")
                     Log.d("MarketAPI", "Response headers: ${response.headers()}")
@@ -151,8 +136,8 @@ class MyMarketsFragment : Fragment() {
     private fun createMarket(username: String, token: String, marketName: String, dialog: AlertDialog) {
         Log.d("MarketAPI", "Creating market: $marketName for user: $username")
         Log.d("MarketAPI", "Using token: Bearer $token")
-        
-        sellerApiService.createMarket("Bearer $token", username, marketName)
+
+        RetrofitInstance.SellerApi.createMarket("Bearer $token", username, marketName)
             .enqueue(object : Callback<Void> {
                 override fun onResponse(call: Call<Void>, response: Response<Void>) {
                     if (response.isSuccessful) {

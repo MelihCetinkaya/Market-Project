@@ -10,6 +10,7 @@ import android.widget.TextView
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import com.example.myapplication.R
+import com.example.myapplication.RetrofitInstance.RetrofitInstance
 import com.example.myapplication.api.SellerApiService
 import com.example.myapplication.model.Seller
 import retrofit2.Call
@@ -25,7 +26,6 @@ class SellerProfileFragment : Fragment() {
     private lateinit var surnameText: TextView
     private lateinit var ageText: TextView
     private lateinit var usernameText: TextView
-    private lateinit var sellerApiService: SellerApiService
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -44,20 +44,6 @@ class SellerProfileFragment : Fragment() {
         ageText = view.findViewById(R.id.ageText)
         usernameText = view.findViewById(R.id.usernameText)
 
-        // Initialize Retrofit
-        val client = OkHttpClient.Builder()
-            .connectTimeout(15, TimeUnit.SECONDS)
-            .readTimeout(15, TimeUnit.SECONDS)
-            .writeTimeout(15, TimeUnit.SECONDS)
-            .build()
-
-        val retrofit = Retrofit.Builder()
-            .baseUrl("http://192.168.109.162:8085/")
-            .client(client)
-            .addConverterFactory(GsonConverterFactory.create())
-            .build()
-
-        sellerApiService = retrofit.create(SellerApiService::class.java)
 
         // Get username and token from SharedPreferences
         val prefs = requireActivity().getSharedPreferences("seller_prefs", Context.MODE_PRIVATE)
@@ -71,7 +57,7 @@ class SellerProfileFragment : Fragment() {
 
     private fun fetchSellerProfile(username: String, token: String) {
         Log.d("ProfileAPI", "Fetching profile for username: $username with token: $token")
-        sellerApiService.getMyProfile("Bearer $token", username).enqueue(object : Callback<Seller> {
+        RetrofitInstance.SellerApi.getMyProfile("Bearer $token", username).enqueue(object : Callback<Seller> {
             override fun onResponse(call: Call<Seller>, response: Response<Seller>) {
                 Log.d("ProfileAPI", "Response code: ${response.code()}")
                 Log.d("ProfileAPI", "Response headers: ${response.headers()}")

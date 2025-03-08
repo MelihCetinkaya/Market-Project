@@ -12,6 +12,7 @@ import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.myapplication.R
+import com.example.myapplication.RetrofitInstance.RetrofitInstance
 import com.example.myapplication.api.CustomerApiService
 import com.example.myapplication.model.Market
 import retrofit2.Call
@@ -24,7 +25,6 @@ import java.util.concurrent.TimeUnit
 
 class MarketsFragment : Fragment() {
     private lateinit var recyclerView: RecyclerView
-    private lateinit var customerApiService: CustomerApiService
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -43,20 +43,7 @@ class MarketsFragment : Fragment() {
         val adapter = MarketsAdapter()
         recyclerView.adapter = adapter
 
-        // Initialize Retrofit
-        val client = OkHttpClient.Builder()
-            .connectTimeout(15, TimeUnit.SECONDS)
-            .readTimeout(15, TimeUnit.SECONDS)
-            .writeTimeout(15, TimeUnit.SECONDS)
-            .build()
 
-        val retrofit = Retrofit.Builder()
-            .baseUrl("http://192.168.109.162:8085/")
-            .client(client)
-            .addConverterFactory(GsonConverterFactory.create())
-            .build()
-
-        customerApiService = retrofit.create(CustomerApiService::class.java)
 
         // Load markets
         loadMarkets()
@@ -69,7 +56,7 @@ class MarketsFragment : Fragment() {
         Log.d("CustomerMarkets", "Using token for API call: $token")
 
         if (token.isNotEmpty()) {
-            customerApiService.getAllMarkets(token).enqueue(object : Callback<List<Market>> {
+            RetrofitInstance.CustomerApi.getAllMarkets(token).enqueue(object : Callback<List<Market>> {
                 override fun onResponse(call: Call<List<Market>>, response: Response<List<Market>>) {
                     Log.d("CustomerMarkets", "Response code: ${response.code()}")
                     

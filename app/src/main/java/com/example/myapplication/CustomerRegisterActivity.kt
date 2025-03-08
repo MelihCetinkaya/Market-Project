@@ -6,6 +6,7 @@ import android.widget.Button
 import android.widget.EditText
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import com.example.myapplication.RetrofitInstance.RetrofitInstance
 import com.example.myapplication.api.CustomerApiService
 import com.example.myapplication.model.Customer
 import retrofit2.Call
@@ -20,7 +21,6 @@ class CustomerRegisterActivity : AppCompatActivity() {
     private lateinit var usernameInput: EditText
     private lateinit var passwordInput: EditText
     private lateinit var registerButton: Button
-    private lateinit var customerApiService: CustomerApiService
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -31,20 +31,6 @@ class CustomerRegisterActivity : AppCompatActivity() {
         passwordInput = findViewById(R.id.passwordInput)
         registerButton = findViewById(R.id.registerButton)
 
-        // Initialize Retrofit
-        val client = OkHttpClient.Builder()
-            .connectTimeout(15, TimeUnit.SECONDS)
-            .readTimeout(15, TimeUnit.SECONDS)
-            .writeTimeout(15, TimeUnit.SECONDS)
-            .build()
-
-        val retrofit = Retrofit.Builder()
-            .baseUrl("http://192.168.109.162:8085/")
-            .client(client)
-            .addConverterFactory(GsonConverterFactory.create())
-            .build()
-
-        customerApiService = retrofit.create(CustomerApiService::class.java)
 
         // Set click listener
         registerButton.setOnClickListener {
@@ -70,7 +56,7 @@ class CustomerRegisterActivity : AppCompatActivity() {
 
         Log.d("CustomerRegister", "Attempting registration with username: $username")
 
-        customerApiService.registerCustomer(customer).enqueue(object : Callback<Customer> {
+        RetrofitInstance.CustomerApi.registerCustomer(customer).enqueue(object : Callback<Customer> {
             override fun onResponse(call: Call<Customer>, response: Response<Customer>) {
                 Log.d("CustomerRegister", "Response code: ${response.code()}")
                 Log.d("CustomerRegister", "Raw response: $response")

@@ -12,6 +12,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.example.myapplication.RetrofitInstance.RetrofitInstance
 import com.example.myapplication.api.SellerApiService
 import com.google.android.material.button.MaterialButton
 import com.google.android.material.floatingactionbutton.FloatingActionButton
@@ -29,7 +30,6 @@ class MarketDetailActivity : AppCompatActivity() {
     private lateinit var marketNameTitle: TextView
     private lateinit var recyclerView: RecyclerView
     private lateinit var addProductButton: FloatingActionButton
-    private lateinit var sellerApiService: SellerApiService
     private var marketName: String = ""
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -51,25 +51,9 @@ class MarketDetailActivity : AppCompatActivity() {
         val adapter = ProductsAdapter()
         recyclerView.adapter = adapter
 
-        // Initialize Retrofit
-        val client = OkHttpClient.Builder()
-            .connectTimeout(15, TimeUnit.SECONDS)
-            .readTimeout(15, TimeUnit.SECONDS)
-            .writeTimeout(15, TimeUnit.SECONDS)
-            .build()
-
-        val retrofit = Retrofit.Builder()
-            .baseUrl("http://192.168.109.162:8085/")
-            .client(client)
-            .addConverterFactory(GsonConverterFactory.create())
-            .build()
-
-        sellerApiService = retrofit.create(SellerApiService::class.java)
-
-        // Load products
         loadProducts()
 
-        // Set click listener for add product button
+
         addProductButton.setOnClickListener {
             showAddProductDialog()
         }
@@ -81,8 +65,8 @@ class MarketDetailActivity : AppCompatActivity() {
 
         if (token.isNotEmpty()) {
             val finalToken = if (!token.startsWith("Bearer ")) "Bearer $token" else token
-            
-            sellerApiService.getMarketProducts(finalToken, marketName)
+
+            RetrofitInstance.SellerApi.getMarketProducts(finalToken, marketName)
                 .enqueue(object : Callback<List<Product>> {
                     override fun onResponse(call: Call<List<Product>>, response: Response<List<Product>>) {
                         if (response.isSuccessful) {
@@ -230,8 +214,8 @@ class MarketDetailActivity : AppCompatActivity() {
             // Check if token already has "Bearer " prefix
             val finalToken = if (!token.startsWith("Bearer ")) "Bearer $token" else token
             Log.d("ProductAPI", "Final token being sent: $finalToken")
-            
-            sellerApiService.addProduct(finalToken, marketName, product)
+
+            RetrofitInstance.SellerApi.addProduct(finalToken, marketName, product)
                 .enqueue(object : Callback<Void> {
                     override fun onResponse(call: Call<Void>, response: Response<Void>) {
                         try {
